@@ -36,7 +36,7 @@ func Serve() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.Logger)
 
-	router.Get("/", controller.GetOrderById())
+	router.Get("/{id}", controller.GetOrderById())
 
 	// start http server
 

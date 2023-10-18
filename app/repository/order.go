@@ -21,10 +21,12 @@ func (repo *OrderRepo) GetById(id string) (model.Order, error) {
 	const op = "OrderRepo.GetById"
 
 	res, err := repo.db.Query(`
-		 SELECT * FROM orders
+		SELECT * FROM orders
 		LEFT JOIN delivery ON orders.order_uid = delivery.order_uid
 		LEFT JOIN payment ON orders.order_uid = payment.order_uid
-		WHERE orders.order_uid = $1
+     	LEFT JOIN order_items ON orders.order_uid = order_items.order_id
+ 		LEFT JOIN item ON order_items.item_id = item.id
+	    WHERE orders.order_uid = $1
 `, id)
 	if err != nil {
 		log.Fatalf("qwer: %v", err)
