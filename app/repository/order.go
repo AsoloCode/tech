@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"log"
 	"tech/app/model"
 	"tech/platform/database"
@@ -63,7 +62,5 @@ func (repo *OrderRepo) GetById(id string) (model.Order, error) {
 	if err := res.Err(); err != nil {
 		log.Fatalf("%s: %v", op, err)
 	}
-
-	fmt.Println(o)
 	return o, nil
 }
