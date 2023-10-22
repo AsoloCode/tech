@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package order;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "/mypackage/pb";
+
+message Delivery {
+  string name = 1;
+  string phone = 2;
+  string zip = 3;
+  string city = 4;
+  string address = 5;
+  string region = 6;
+  string email = 7;
+}
+
+message Payment {
+  string transaction = 1;
+  string request_id = 2;
+  string currency = 3;
+  string provider = 4;
+  int32 amount = 5;
+  google.protobuf.Timestamp payment_dt = 6;
+  string bank = 7;
+  int32 delivery_cost = 8;
+  int32 goods_total = 9;
+  int32 custom_fee = 10;
+}
+
+message Item {
+  int32 chrt_id = 1;
+  string track_number = 2;
+  float price = 3;
+  string rid = 4;
+  string name = 5;
+  float sale = 6;
+  string size = 7;
+  float total_price = 8;
+  int32 nm_id = 9;
+  string brand = 10;
+  int32 status = 11;
+}
+
+message Order {
+  string order_uid = 1;
+  string track_number = 2;
+  string entry = 3;
+  string locale = 4;
+  string internal_signature = 5;
+  string customer_id = 6;
+  string delivery_service = 7;
+  string shardkey = 8;
+  int32 sm_id = 9;
+  string oof_shard = 10;
+  google.protobuf.Timestamp date_created = 11;
+  Delivery delivery = 12;
+  Payment payment = 13;
+  repeated Item items = 14;
+}
+

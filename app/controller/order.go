@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"tech/app/repository"
 	resp "tech/app/response"
+	"tech/cache"
 )
 
 func GetOrderById() http.HandlerFunc {
@@ -16,12 +17,18 @@ func GetOrderById() http.HandlerFunc {
 		if !isValidate {
 			render.JSON(w, r, resp.Error("invalid id"))
 		}
-
+		c := cache.GetCache()
+		dataFromCache, err := c.GetOrderFromCache(orderId)
+		if err == nil {
+			render.JSON(w, r, dataFromCache)
+			return
+		}
 		repo := repository.NewOrderRepo()
 		data, err := repo.GetById(orderId)
 		if err != nil {
 			return
 		}
+		c.AddOrderToCache(orderId, data)
 		render.JSON(w, r, data)
 	}
 }
