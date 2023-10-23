@@ -2,12 +2,14 @@ package cache
 
 import (
 	"errors"
+	"sync"
 	"tech/app/model"
 )
 
 // Кэширование структуры данных
 type OrderCache struct {
 	Orders map[string]model.Order
+	m      sync.Mutex
 }
 
 var orderCache = &OrderCache{} // Объявление переменной типа OrderCache
@@ -19,6 +21,8 @@ func InitOrderCache() {
 
 // Добавление данных в кэш
 func (c *OrderCache) AddOrderToCache(orderID string, orderData model.Order) {
+	c.m.Lock()
+	defer c.m.Unlock()
 	c.Orders[orderID] = orderData
 }
 

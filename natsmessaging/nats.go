@@ -1,8 +1,14 @@
 package natsmessaging
 
 import (
+	_ "database/sql"
+	"encoding/json"
+	"github.com/jmoiron/sqlx"
 	stan "github.com/nats-io/stan.go"
+	"log"
 	"os"
+	"tech/app/model"
+	"tech/app/transaction"
 )
 
 type SC struct{ stan.Conn }
@@ -29,6 +35,33 @@ func SendMessage(sc stan.Conn, subject string, message []byte) error {
 func SubscribeToMessages(sc stan.Conn, subject string, handler func(msg *stan.Msg)) (stan.Subscription, error) {
 	subscription, err := sc.Subscribe(subject, handler)
 	return subscription, err
+}
+
+// Обработчик сообщений NATS
+func HandleNATSMessage(msg *stan.Msg) {
+	// Распаковываем сообщение из NATS
+	var orderData *model.Order
+	if err := json.Unmarshal(msg.Data, &orderData); err != nil {
+		log.Printf("Failed to unmarshal NATS message: %v", err)
+		return
+	}
+
+	// Подключение к базе данных
+	db, err := sqlx.Open("your-database-driver", "connection-string")
+	if err != nil {
+		log.Printf("Failed to connect to the database: %v", err)
+		return
+	}
+	defer db.Close()
+
+	// Выполните операции записи данных в базу данных, используя функции из пакета transaction, например:
+	if err := transaction.InsertOrderData(&model.Order{}); err != nil {
+		log.Printf("Failed to insert data into the database: %v", err)
+		return
+	}
+
+	// Все успешно обработано
+	log.Printf("Data from NATS message inserted into the database")
 }
 
 func GetSc() *SC {

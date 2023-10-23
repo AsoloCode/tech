@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/google/uuid" // Импорт пакета для работы с UUID
 	"log"
 	"tech/app/model"
 	"tech/platform/database"
@@ -19,21 +20,27 @@ func NewOrderRepo() OrderRepository {
 func (repo *OrderRepo) GetById(id string) (model.Order, error) {
 	const op = "OrderRepo.GetById"
 
+	// Преобразование строки UUID в формат UUID из пакета google/uuid
+	orderUID, err := uuid.Parse(id)
+	if err != nil {
+		log.Fatalf("%s: %v", op, err)
+	}
+
 	res, err := repo.db.Query(`
 		SELECT
     o.*,
     d.name, d.phone, d.zip, d.city, d.address, d.region, d.email,
     p.transaction, p.request_id, p.currency, p.provider, p.amount, p.payment_dt, p.bank, p.delivery_cost, p.goods_total, p.custom_fee,
-   	i.*
+    i.*
 		FROM orders AS o
 		LEFT JOIN delivery AS d ON o.order_uid = d.order_uid
 		LEFT JOIN payment AS p ON o.order_uid = p.order_uid
 		LEFT JOIN order_items AS oi ON o.order_uid = oi.order_id
 		LEFT JOIN item AS i ON oi.item_id = i.id
 		WHERE o.order_uid = $1
-`, id)
+	`, orderUID)
 	if err != nil {
-		log.Fatalf("qwer: %v", err)
+		log.Fatalf("%s: %v", op, err)
 	}
 	defer res.Close()
 

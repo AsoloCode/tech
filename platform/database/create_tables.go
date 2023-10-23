@@ -7,15 +7,15 @@ import (
 func CreateTables() error {
 	const op = "database.CreateTables"
 
-	stmt, err := defaultDB.Prepare(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
-	_, err = stmt.Exec()
-	if err != nil {
-		return fmt.Errorf("%s", err)
-	}
+	//	stmt, err := defaultDB.Prepare(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
+	//	_, err = stmt.Exec()
+	//	if err != nil {
+	//		return fmt.Errorf("%s", err)
+	//}
 
 	query := `
 CREATE TABLE IF NOT EXISTS orders (
-  order_uid UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
+  order_uid UUID PRIMARY KEY NOT NULL,
   track_number TEXT NOT NULL,
   entry TEXT NOT NULL,
   locale TEXT NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS order_items (
 );
 `
 
-	_, err = defaultDB.Exec(query)
+	_, err := defaultDB.Exec(query)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}

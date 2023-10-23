@@ -44,19 +44,17 @@ message Item {
 }
 
 message Order {
-  string order_uid = 1;
-  string track_number = 2;
-  string entry = 3;
-  string locale = 4;
-  string internal_signature = 5;
-  string customer_id = 6;
-  string delivery_service = 7;
-  string shardkey = 8;
-  int32 sm_id = 9;
-  string oof_shard = 10;
-  google.protobuf.Timestamp date_created = 11;
-  Delivery delivery = 12;
-  Payment payment = 13;
-  repeated Item items = 14;
+  string TrackNumber = 1;
+  string Entry = 2;
+  string Locale = 3;
+  string InternalSig = 4;
+  string CustomerID = 5;
+  string DeliveryService = 6;
+  string ShardKey = 7;
+  int32 SMID = 8;
+  string OofShard = 9;
+  google.protobuf.Timestamp DateCreated = 10;
+  Delivery Delivery = 11;
+  Payment Payment = 12;
+  repeated Item Items = 13;
 }
-
