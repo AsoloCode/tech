@@ -31,8 +31,13 @@ func InsertOrderData(order *model.Order) error {
 		rollbackTransaction(tx)
 		return err
 	}
+	//
+	//if err := insertItems(tx, order.Items); err != nil {
+	//	rollbackTransaction(tx)
+	//	return err
+	//}
 
-	if err := insertItems(tx, order.Items); err != nil {
+	if err := insertOrderItems(tx, order.OrderUID, order.Items); err != nil {
 		rollbackTransaction(tx)
 		return err
 	}
@@ -99,6 +104,35 @@ func insertItems(tx *sql.Tx, items []model.Item) error {
 		}
 	}
 	return nil
+}
+
+func insertOrderItems(tx *sql.Tx, orderUID string, items []model.Item) error {
+	for _, item := range items {
+		var iid int
+
+		err := tx.QueryRow(`
+            INSERT INTO item (chrt_id, track_number, price, rid, "name", sale, "size", total_price, nm_id, brand, status)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            RETURNING id `,
+			item.ChrtID, item.TrackNumber, item.Price, item.RID, item.Name, item.Sale, item.Size, item.TotalPrice, item.NMID, item.Brand, item.Status).Scan(&iid)
+		if err != nil {
+			log.Printf("Failed to insert data into 'item' table: %v", err)
+			return err
+		}
+
+		_, err = tx.Exec(`
+	       INSERT INTO order_items (order_id, item_id)
+	       VALUES ($1, $2)
+	       `,
+			orderUID, iid)
+
+		if err != nil {
+			log.Printf("Failed to insert data into 'order_items' table: %v", err)
+			return err
+		}
+	}
+	return nil
+
 }
 
 func rollbackTransaction(tx *sql.Tx) {

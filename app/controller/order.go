@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
@@ -14,9 +13,7 @@ import (
 func GetOrderById() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		orderId := chi.URLParam(r, "id")
-		fmt.Println(orderId)
 		isValidate := IsValidUUID(orderId)
-		fmt.Println(isValidate)
 		if !isValidate {
 			render.JSON(w, r, resp.Error("invalid id"))
 		}

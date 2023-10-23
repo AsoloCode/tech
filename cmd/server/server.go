@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"github.com/nats-io/stan.go"
 	"google.golang.org/protobuf/proto"
 	"log"
@@ -42,6 +43,17 @@ func Server() {
 	router.Use(middleware.URLFormat)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.Logger)
+
+	router.Use(cors.Handler(cors.Options{
+		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
+		AllowedOrigins: []string{"https://*", "http://*"},
+		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
 
 	// Установка обработчика для маршрута
 	router.Get("/{id}", controller.GetOrderById())
@@ -88,6 +100,7 @@ func Server() {
 			log.Printf("Failed to unsubscribe: %v", err)
 		}
 	}()
+
 	// Запуск HTTP-сервера
 	url := appCfg.Host + ":" + strconv.Itoa(appCfg.Port)
 	if err := http.ListenAndServe(url, router); err != nil {

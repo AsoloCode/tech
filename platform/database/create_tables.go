@@ -73,11 +73,9 @@ CREATE TABLE IF NOT EXISTS item (
 );
 
 CREATE TABLE IF NOT EXISTS order_items (
-  item_id INTEGER,
-  order_id UUID,
-  CONSTRAINT order_items_pkey PRIMARY KEY (item_id, order_id),
-  FOREIGN KEY (item_id) REFERENCES item (id),
-  FOREIGN KEY (order_id) REFERENCES orders (order_uid)
+  item_id INTEGER REFERENCES item (id),
+  order_id UUID REFERENCES orders (order_uid),
+  CONSTRAINT order_items_pkey PRIMARY KEY (item_id, order_id)
 );
 `
 

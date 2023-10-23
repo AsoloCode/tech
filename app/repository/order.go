@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"log"
 	"tech/app/model"
 	"tech/platform/database"
@@ -19,7 +18,6 @@ func NewOrderRepo() OrderRepository {
 
 func (repo *OrderRepo) GetById(uid string) (model.Order, error) {
 	const op = "OrderRepo.GetById"
-	fmt.Println(uid)
 	res, err := repo.db.Query(`
     SELECT
         o.*,
@@ -48,7 +46,6 @@ func (repo *OrderRepo) GetById(uid string) (model.Order, error) {
 		var item model.Item
 
 		if err := res.Scan(
-
 			&o.OrderUID, &o.TrackNumber, &o.Entry, &o.Locale, &o.InternalSig, &o.CustomerID,
 			&o.DeliveryService, &o.ShardKey, &o.SMID, &o.OofShard, &o.DateCreated,
 			&delivery.Name, &delivery.Phone, &delivery.Zip, &delivery.City, &delivery.Address, &delivery.Region, &delivery.Email,
