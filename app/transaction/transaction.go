@@ -31,11 +31,6 @@ func InsertOrderData(order *model.Order) error {
 		rollbackTransaction(tx)
 		return err
 	}
-	//
-	//if err := insertItems(tx, order.Items); err != nil {
-	//	rollbackTransaction(tx)
-	//	return err
-	//}
 
 	if err := insertOrderItems(tx, order.OrderUID, order.Items); err != nil {
 		rollbackTransaction(tx)

@@ -12,7 +12,7 @@ type OrderCache struct {
 	m      sync.Mutex
 }
 
-var orderCache = &OrderCache{} // Объявление переменной типа OrderCache
+var orderCache = &OrderCache{}
 
 // Инициализация кэша
 func InitOrderCache() {

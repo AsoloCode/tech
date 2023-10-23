@@ -20,7 +20,6 @@ import (
 	"tech/platform/database"
 )
 
-// Serve ..
 func Server() {
 	// Инициализация конфигурации приложения
 	appCfg := config.AppCfg()
@@ -78,7 +77,7 @@ func Server() {
 			return
 		}
 
-		modelOrder.OrderFromProto(&order) // Преобразование protobuf Order в модель Order
+		modelOrder.OrderFromProto(&order)
 
 		// Сохраняем данные из NATS в базе данных
 
