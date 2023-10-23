@@ -20,7 +20,7 @@ import (
 )
 
 // Serve ..
-func Serve() {
+func Server() {
 	// Инициализация конфигурации приложения
 	appCfg := config.AppCfg()
 
